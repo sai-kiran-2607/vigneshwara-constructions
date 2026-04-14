@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8fafc;
+  color: #1f2937;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.site-blueprint {
+  background-color: #f8fafc;
+  background-image:
+    linear-gradient(rgba(15, 39, 71, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 39, 71, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(15, 39, 71, 0.9), rgba(15, 39, 71, 0.72)),
+    url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1600&q=80');
+  background-position: center;
+  background-size: cover;
+}
+
+.section-shell {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.ant-layout {
+  background: transparent;
+}
+
+.ant-menu-horizontal {
+  border-bottom: none !important;
+}
+
+.ant-card {
+  border-radius: 1rem;
+}
+
+.ant-drawer .ant-drawer-header {
+  border-bottom: 1px solid rgba(15, 39, 71, 0.08);
+}
+
+@media (max-width: 640px) {
+  .hero-overlay {
+    background-position: 60% center;
+  }
+}
