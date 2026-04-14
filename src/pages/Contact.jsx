@@ -20,31 +20,54 @@ if (EMAILJS_PUBLIC_KEY) {
 
 export default function Contact() {
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [submitting, setSubmitting] = React.useState(false);
 
   const onFinish = async (values) => {
     if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
-      message.error(
-        "Email service is not configured. Please add EmailJS environment keys.",
-      );
+      messageApi.open({
+        type: "error",
+        content:
+          "Email service is not configured. Please add EmailJS environment keys.",
+      });
       return;
     }
 
+    setSubmitting(true);
+    messageApi.open({
+      key: "sendInquiry",
+      type: "loading",
+      content: "Sending inquiry...",
+      duration: 0,
+    });
+
     try {
       await send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        name: values.name,
         from_name: values.name,
+        user_name: values.name,
         phone: values.phone,
         message: values.message,
       });
 
-      message.success(
-        `Thank you, ${values.name}. We will get back to you soon.`,
-      );
+      messageApi.open({
+        key: "sendInquiry",
+        type: "success",
+        content: "Your inquiry has been submitted. Thank you!",
+        duration: 3,
+      });
       form.resetFields();
     } catch (error) {
       console.error("EmailJS send error:", error);
-      message.error(
-        "There was a problem sending your inquiry. Please try again later.",
-      );
+      messageApi.open({
+        key: "sendInquiry",
+        type: "error",
+        content:
+          "There was a problem sending your inquiry. Please try again later.",
+        duration: 3,
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -75,8 +98,10 @@ export default function Contact() {
                 form={form}
                 layout="vertical"
                 onFinish={onFinish}
+                validateTrigger="onBlur"
                 className="space-y-2"
               >
+                {contextHolder}
                 <Form.Item
                   label="Name"
                   name="name"
@@ -95,9 +120,19 @@ export default function Contact() {
                       required: true,
                       message: "Please enter your phone number",
                     },
+                    {
+                      pattern: /^\d{10}$/,
+                      message: "Please enter a valid 10-digit phone number",
+                    },
                   ]}
                 >
-                  <Input size="large" placeholder="Your phone number" />
+                  <Input
+                    size="large"
+                    placeholder="Your phone number"
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={10}
+                  />
                 </Form.Item>
 
                 <Form.Item
@@ -115,6 +150,7 @@ export default function Contact() {
                     type="primary"
                     htmlType="submit"
                     size="large"
+                    loading={submitting}
                     className="h-12 border-none bg-accent px-8 font-semibold hover:!bg-[#bf7720]"
                   >
                     Submit Inquiry
