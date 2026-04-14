@@ -86,7 +86,7 @@ export default function Navbar() {
           href="tel:+917207601556"
           className="mt-4 border-none bg-accent font-semibold hover:!bg-[#bf7720]"
         >
-          Call Ponnam Ganesh
+          Call
         </Button>
       </Drawer>
     </Header>
